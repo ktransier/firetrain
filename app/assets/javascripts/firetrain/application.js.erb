@@ -1,0 +1,89 @@
+const listenerEvent = '<%= ENV["FIRETRAIN_TURBOLINKS_ENABLED"] %>' ? 'turbolinks:load' : 'DOMContentLoaded'
+
+document.addEventListener(listenerEvent, function() {
+  var authContainer = document.getElementById("firebaseui-auth-container");
+  if (authContainer) {
+    setTitleAdjustmentObserver();
+    var firebaseConfig = {
+      apiKey: '<%= ENV["FIRETRAIN_API_KEY"] %>',
+      authDomain: '<%= ENV["FIRETRAIN_API_KEY"] %>',
+      databaseURL: '<%= ENV["FIRETRAIN_DATABASE_URL"] %>',
+      projectId: '<%= ENV["FIRETRAIN_PROJECT_ID"] %>',
+      storageBucket: '<%= ENV["FIRETRAIN_STORAGE_BUCKET"] %>',
+      messagingSenderId: '<%= ENV["FIRETRAIN_MESSAGING_SENDER_ID"] %>',
+      appId: '<%= ENV["FIRETRAIN_APP_ID"] %>',
+      measurementId: '<%= ENV["FIRETRAIN_MEASUREMENT_ID"] %>',
+    };
+    
+    if (firebase.apps.length > 0) {
+      firebase.app().delete().then(function() {
+        firebase.initializeApp(firebaseConfig);
+      });
+    } else {
+      firebase.initializeApp(firebaseConfig);
+    }
+
+    var ui = firebaseui.auth.AuthUI.getInstance() || new firebaseui.auth.AuthUI(firebase.auth());
+    var uiConfig = {
+      credentialHelper: firebaseui.auth.CredentialHelper.NONE,
+      callbacks: {
+        signInSuccessWithAuthResult: function(authResult, redirectUrl) {
+    			fetch('/create_session', {
+    		    method: 'POST',
+    		    headers: {
+    		      'Accept': 'application/json',
+    		      'Content-Type': 'application/json',
+    		      'Firebase-Token': authResult.user.ma
+    		    },
+            body: JSON.stringify({
+              authenticity_token: document.getElementsByName("csrf-token")[0].content
+            })
+    		  }).then(
+            function(response) {
+              if (response.status !== 200) {
+                console.log('Looks like there was a problem. Status Code: ' +
+                  response.status);
+                return;
+              }
+
+              window.location = "/"
+            }
+          )
+          .catch(function(err) {
+            console.log('Fetch Error :-S', err);
+          });
+          return false;
+        },
+        uiShown: function() {
+          document.getElementById('loader').style.display = 'none';
+        }
+      },
+      signInFlow: 'popup',
+      signInSuccessUrl: '/',
+      signInOptions: [
+        {
+          provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
+          requireDisplayName: false
+        }
+      ],
+      tosUrl: '<%= ENV["FIRETRAIN_TOS_URL"] %>',
+      privacyPolicyUrl: '<%= ENV["FIRETRAIN_PRIVACY_POLICY_URL"] %>'
+    };
+
+    ui.start('#firebaseui-auth-container', uiConfig);
+  }
+}, false);
+
+function setTitleAdjustmentObserver() {
+  const targetNode = document.body;
+  const config = { attributes: true, childList: true, subtree: true };
+  const callback = function(mutationsList, observer) {
+    const title = document.getElementsByClassName('firebaseui-title')[0]
+    if (title && title.textContent == "Sign in with email") {
+      title.textContent = "Sign in or create account"
+    }
+  };
+
+  const observer = new MutationObserver(callback);
+  observer.observe(targetNode, config);
+}
