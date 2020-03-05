@@ -96,5 +96,13 @@ rake firebase:certificates:request
 
 + Controllers can be restricted to authenticated users by adding `before_action :authenticate_api_user`
 
+## Tests
+
+Run:
+
+```console
+rake test
+```
+
 ## License
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
