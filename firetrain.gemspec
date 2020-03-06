@@ -29,4 +29,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency "firebase_id_token", "2.3.1"
 
   spec.add_development_dependency "sqlite3"
+  spec.add_development_dependency "pry"
+  spec.add_development_dependency "mock_redis"
 end
