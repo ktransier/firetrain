@@ -2,7 +2,7 @@
 
 [![Github Actions](https://github.com/ktransier/firetrain/workflows/Tests/badge.svg)](https://github.com/ktransier/firetrain/actions?query=workflow%3ATests)
 
-The following gem supports authenticating a Rails backend with Firebase for both web and mobile applications. It includes support for both token and session authentication via email/password.
+A Ruby gem that supports authenticating a Rails backend with Firebase for both web and mobile applications. It includes authentication functionality for both an api access token and a session cookie.
 
 ## Installation
 Add this line to your application's Gemfile:
