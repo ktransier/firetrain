@@ -28,7 +28,7 @@ document.addEventListener(listenerEvent, function() {
       credentialHelper: firebaseui.auth.CredentialHelper.NONE,
       callbacks: {
         signInSuccessWithAuthResult: function(authResult, redirectUrl) {
-    			fetch('/create_session', {
+    			fetch('/api/create_session', {
     		    method: 'POST',
     		    headers: {
     		      'Accept': 'application/json',

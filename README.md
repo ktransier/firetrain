@@ -86,7 +86,7 @@ rake firebase:certificates:request
 <%- if current_user %>
   <%= link_to 'Sign Out', sign_out_path, method: :delete %>
 <%- else %>
-  <%= link_to 'Sign In', auth_path %>
+  <%= link_to 'Sign In', api_auth_path %>
 <%- end %>
 ```
 

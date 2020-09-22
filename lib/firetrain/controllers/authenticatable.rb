@@ -2,7 +2,7 @@ module FireTrain
   module Controllers
     module Authenticatable
       def authenticate_session_user
-        redirect_to auth_path unless authentication_manager.authenticate_session_user
+        redirect_to api_auth_path unless authentication_manager.authenticate_session_user
       end
 
       def authenticate_api_user
